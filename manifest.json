@@ -1,0 +1,9 @@
+{
+  "name": "Receipt Snap",
+  "short_name": "Receipts",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f5f7",
+  "theme_color": "#111111",
+  "description": "Snap a receipt and automatically save the expense."
+}
