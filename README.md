@@ -1,64 +1,33 @@
+# Receipt Snap Free
 
-# Receipt Snap
+A zero-subscription, phone-first receipt tracker.
 
-A phone-first receipt tracker.
+## How it works
+- Tap **Take Receipt Picture**
+- OCR runs in the browser with Tesseract.js
+- The app guesses store, date, total, and category
+- You get a quick confirmation screen
+- The receipt image + record are saved locally on your phone/browser using IndexedDB
+- Export CSV or a JSON backup whenever you want
 
-## What it does
+## Cost
+The app itself has no API key, backend, or subscription requirement.
+GitHub Pages can host these static files for free.
 
-1. Tap **Take Receipt Picture**
-2. Use your phone camera
-3. The image is sent to the OpenAI API for receipt reading
-4. Vendor, date, total, tax, category, payment method, and description are extracted
-5. The receipt image and data are saved automatically in SQLite
-6. Export everything to CSV any time
+## Important limitations
+- OCR runs on-device/in-browser and can misread faded, crumpled, handwritten, or unusually formatted receipts.
+- The first OCR use needs internet access to load the Tesseract.js library/language data from the CDN.
+- Data is stored in the browser on that device. Clearing Safari website data can erase it.
+- Use **Backup JSON** regularly if these are important tax records.
 
-## Categories
+## Publish free with GitHub Pages
+1. Create a GitHub repository.
+2. Upload `index.html`, `manifest.json`, `sw.js`, `icon-192.png`, and `icon-512.png`.
+3. In the repository, open **Settings → Pages**.
+4. Under **Build and deployment**, choose **Deploy from a branch**.
+5. Select the `main` branch and `/ (root)`, then Save.
+6. GitHub will give you a `github.io` web address.
+7. Open that address in Safari on iPhone.
+8. Tap **Share → Add to Home Screen**.
 
-- Inventory
-- Shipping Supplies
-- Gas
-- Equipment
-- Repairs
-- Meals/Travel
-- Office
-- Fees
-- Other
-
-## Run locally
-
-Python 3.10+ recommended.
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-# Windows: .venv\Scripts\activate
-
-pip install -r requirements.txt
-
-export OPENAI_API_KEY="your-key-here"
-# Windows PowerShell:
-# $env:OPENAI_API_KEY="your-key-here"
-
-python app.py
-```
-
-Then open `http://localhost:5000`.
-
-## Use it on your iPhone
-
-For the camera button and install-to-home-screen experience, deploy the app to a secure HTTPS host.
-Once deployed:
-
-1. Open the site in Safari
-2. Tap Share
-3. Tap **Add to Home Screen**
-
-It will behave much like a lightweight app.
-
-## Important
-
-- Keep your OpenAI API key on the server. Never put it in the webpage.
-- Receipt images are stored in the local `receipts/` folder.
-- Receipt data is stored in `receipts.db`.
-- Back up both if you use this for tax records.
-- AI can occasionally misread a receipt. Keep the original image as the source record.
+No Render and no OpenAI API key needed.

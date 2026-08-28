@@ -1,9 +1,20 @@
 {
-  "name": "Receipt Snap",
-  "short_name": "Receipts",
-  "start_url": "/",
+  "name": "Receipt Snap Free",
+  "short_name": "Receipt Snap",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f5f7",
   "theme_color": "#111111",
-  "description": "Snap a receipt and automatically save the expense."
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

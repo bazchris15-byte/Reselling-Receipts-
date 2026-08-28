@@ -1,51 +1,59 @@
-
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111111">
-  <link rel="manifest" href="/manifest.json">
-  <title>Receipt Snap</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#111111" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Receipt Snap Free</title>
   <style>
     :root { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    * { box-sizing: border-box; }
     body { margin:0; background:#f5f5f7; color:#111; }
-    .wrap { max-width:720px; margin:auto; padding:22px 16px 80px; }
-    .top { display:flex; justify-content:space-between; align-items:end; gap:12px; }
-    h1 { margin:0; font-size:30px; }
-    .sub { color:#666; margin-top:4px; }
-    .card { background:#fff; border-radius:22px; padding:18px; margin-top:18px; box-shadow:0 4px 18px rgba(0,0,0,.06); }
-    .snap { display:block; width:100%; padding:20px 16px; border:0; border-radius:18px; font-size:21px; font-weight:750; background:#111; color:white; cursor:pointer; text-align:center; box-sizing:border-box; }
+    .wrap { max-width:760px; margin:auto; padding:18px 14px 90px; }
+    h1 { margin:4px 0 0; font-size:30px; }
+    .sub { color:#666; margin:5px 0 0; }
+    .card { background:#fff; border-radius:22px; padding:18px; margin-top:16px; box-shadow:0 4px 18px rgba(0,0,0,.06); }
+    .snap { display:block; width:100%; padding:20px 16px; border-radius:18px; background:#111; color:#fff; text-align:center; font-weight:800; font-size:21px; cursor:pointer; }
     input[type=file] { display:none; }
-    .status { text-align:center; min-height:24px; margin-top:12px; font-weight:600; }
+    .status { min-height:26px; margin-top:12px; text-align:center; font-weight:650; }
+    .progress { height:8px; background:#eee; border-radius:999px; overflow:hidden; margin-top:10px; display:none; }
+    .progress > div { height:100%; width:0%; background:#111; transition:width .2s; }
     .stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
     .stat { background:#fff; border-radius:18px; padding:16px; }
-    .stat b { font-size:24px; display:block; }
-    .row { display:grid; grid-template-columns:1fr auto; gap:12px; padding:14px 0; border-top:1px solid #eee; }
-    .row:first-child { border-top:0; }
-    .vendor { font-weight:750; font-size:17px; }
-    .meta { color:#666; font-size:14px; margin-top:3px; }
-    .amount { font-weight:800; font-size:18px; }
-    .pill { display:inline-block; margin-top:5px; padding:4px 8px; background:#efefef; border-radius:999px; font-size:12px; }
+    .stat b { display:block; font-size:24px; margin-top:3px; }
     .actions { display:flex; gap:10px; margin-top:12px; }
-    .linkbtn { flex:1; text-decoration:none; color:#111; background:#fff; border:1px solid #ddd; border-radius:14px; padding:12px; text-align:center; font-weight:650; }
-    img.thumb { width:52px; height:52px; border-radius:10px; object-fit:cover; float:left; margin-right:10px; }
+    .btn { flex:1; border:1px solid #ddd; background:#fff; border-radius:14px; padding:12px; font-weight:700; font-size:15px; }
+    .row { display:grid; grid-template-columns:58px 1fr auto; gap:11px; align-items:center; padding:13px 0; border-top:1px solid #eee; }
+    .row:first-child { border-top:0; }
+    .thumb { width:58px; height:58px; object-fit:cover; border-radius:10px; background:#eee; }
+    .vendor { font-weight:800; font-size:17px; }
+    .meta { color:#666; font-size:13px; margin-top:3px; }
+    .amount { font-weight:850; font-size:18px; }
+    .pill { display:inline-block; background:#efefef; border-radius:999px; padding:4px 8px; font-size:12px; margin-top:5px; }
     .empty { color:#777; text-align:center; padding:18px 0; }
+    .tiny { color:#777; font-size:12px; line-height:1.4; margin-top:10px; }
+    dialog { border:0; border-radius:20px; width:min(92vw,520px); padding:20px; }
+    dialog::backdrop { background:rgba(0,0,0,.4); }
+    label.field { display:block; margin-top:10px; font-size:13px; font-weight:700; }
+    input.edit, select.edit { width:100%; padding:11px; margin-top:5px; border:1px solid #ccc; border-radius:12px; font-size:16px; }
+    .dlg-actions { display:flex; gap:10px; margin-top:16px; }
   </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top">
-    <div>
-      <h1>Receipt Snap</h1>
-      <div class="sub">Take the picture. The app does the rest.</div>
-    </div>
-  </div>
+  <h1>Receipt Snap</h1>
+  <div class="sub">Snap it. Read it on your phone. Save it locally.</div>
 
   <div class="card">
     <label class="snap" for="camera">📸 Take Receipt Picture</label>
     <input id="camera" type="file" accept="image/*" capture="environment">
     <div id="status" class="status"></div>
+    <div id="progress" class="progress"><div id="bar"></div></div>
+    <div class="tiny">No account or API key required. Receipt images and records stay in this browser on this device.</div>
   </div>
 
   <div class="stats">
@@ -54,8 +62,8 @@
   </div>
 
   <div class="actions">
-    <a class="linkbtn" href="/api/export.csv">Export CSV</a>
-    <button class="linkbtn" onclick="loadReceipts()">Refresh</button>
+    <button class="btn" id="exportBtn">Export CSV</button>
+    <button class="btn" id="backupBtn">Backup JSON</button>
   </div>
 
   <div class="card">
@@ -64,62 +72,223 @@
   </div>
 </div>
 
-<script>
-const camera = document.getElementById('camera');
-const statusEl = document.getElementById('status');
+<dialog id="editDialog">
+  <h3 style="margin-top:0">Check receipt</h3>
+  <div class="tiny">OCR can misread faded or crumpled receipts. Fix anything that looks wrong, then save.</div>
+  <label class="field">Store<input id="eVendor" class="edit"></label>
+  <label class="field">Date<input id="eDate" class="edit" type="date"></label>
+  <label class="field">Total<input id="eTotal" class="edit" inputmode="decimal"></label>
+  <label class="field">Category
+    <select id="eCategory" class="edit">
+      <option>Inventory</option><option>Shipping Supplies</option><option>Gas</option>
+      <option>Equipment</option><option>Repairs</option><option>Meals/Travel</option>
+      <option>Office</option><option>Fees</option><option>Other</option>
+    </select>
+  </label>
+  <div class="dlg-actions">
+    <button class="btn" id="cancelEdit">Cancel</button>
+    <button class="btn" id="saveEdit">Save Receipt</button>
+  </div>
+</dialog>
 
-camera.addEventListener('change', async () => {
-  const file = camera.files[0];
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const DB_NAME = 'receiptSnapDB';
+const STORE = 'receipts';
+let pending = null;
+
+function openDB() {
+  return new Promise((resolve,reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, {keyPath:'id'});
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function putReceipt(r) {
+  const db = await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(STORE,'readwrite');
+    tx.objectStore(STORE).put(r);
+    tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+  });
+}
+
+async function getAllReceipts() {
+  const db = await openDB();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE,'readonly');
+    const req=tx.objectStore(STORE).getAll();
+    req.onsuccess=()=>resolve(req.result || []);
+    req.onerror=()=>reject(req.error);
+  });
+}
+
+function guessVendor(lines) {
+  const bad = /receipt|thank|welcome|subtotal|total|tax|visa|mastercard|debit|credit|cash|change|date|time/i;
+  for (const raw of lines.slice(0,8)) {
+    const s = raw.trim().replace(/\s+/g,' ');
+    if (s.length >= 3 && s.length <= 40 && /[A-Za-z]/.test(s) && !bad.test(s)) return s;
+  }
+  return 'Unknown store';
+}
+
+function guessDate(text) {
+  const patterns = [
+    /\b(20\d{2})[-\/](\d{1,2})[-\/](\d{1,2})\b/,
+    /\b(\d{1,2})[-\/](\d{1,2})[-\/](20\d{2})\b/,
+    /\b(\d{1,2})[-\/](\d{1,2})[-\/](\d{2})\b/
+  ];
+  for (const p of patterns) {
+    const m=text.match(p);
+    if (!m) continue;
+    let y,mo,d;
+    if (m[1].length===4) { y=m[1]; mo=m[2]; d=m[3]; }
+    else { mo=m[1]; d=m[2]; y=m[3].length===2 ? '20'+m[3] : m[3]; }
+    mo=String(mo).padStart(2,'0'); d=String(d).padStart(2,'0');
+    return `${y}-${mo}-${d}`;
+  }
+  return new Date().toISOString().slice(0,10);
+}
+
+function guessTotal(text) {
+  const lines=text.split(/\n+/);
+  const candidates=[];
+  for (const line of lines) {
+    if (/\b(total|amount due|balance due|grand total)\b/i.test(line) && !/subtotal/i.test(line)) {
+      const nums=[...line.matchAll(/\$?\s*(\d{1,5}[.,]\d{2})\b/g)].map(m=>parseFloat(m[1].replace(',','.')));
+      for (const n of nums) if (isFinite(n)) candidates.push(n);
+    }
+  }
+  if (candidates.length) return Math.max(...candidates).toFixed(2);
+
+  const all=[...text.matchAll(/\$?\s*(\d{1,5}[.,]\d{2})\b/g)].map(m=>parseFloat(m[1].replace(',','.'))).filter(Number.isFinite);
+  return all.length ? Math.max(...all).toFixed(2) : '0.00';
+}
+
+function guessCategory(text) {
+  const t=text.toLowerCase();
+  if (/gas|fuel|unleaded|diesel|gallon/.test(t)) return 'Gas';
+  if (/postage|shipping|label|mail|usps|ups|fedex|bubble mailer|packing tape|box/.test(t)) return 'Shipping Supplies';
+  if (/tool|drill|saw|equipment/.test(t)) return 'Equipment';
+  if (/repair|auto parts|hardware/.test(t)) return 'Repairs';
+  if (/restaurant|cafe|grill|pizza|burger|taco/.test(t)) return 'Meals/Travel';
+  return 'Inventory';
+}
+
+function fileToDataURL(file) {
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);
+  });
+}
+
+const camera=document.getElementById('camera');
+const statusEl=document.getElementById('status');
+const progress=document.getElementById('progress');
+const bar=document.getElementById('bar');
+const dlg=document.getElementById('editDialog');
+
+camera.addEventListener('change', async ()=>{
+  const file=camera.files[0];
   if (!file) return;
-  statusEl.textContent = "Reading receipt…";
-  const form = new FormData();
-  form.append("receipt", file, file.name || "receipt.jpg");
+  statusEl.textContent='Reading receipt…';
+  progress.style.display='block';
+  bar.style.width='4%';
   try {
-    const res = await fetch("/api/scan", { method:"POST", body:form });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Scan failed");
-    statusEl.textContent = `Saved: ${data.vendor || "Receipt"} — $${Number(data.total || 0).toFixed(2)}`;
-    camera.value = "";
-    await Promise.all([loadReceipts(), loadSummary()]);
-  } catch (e) {
-    statusEl.textContent = e.message;
+    const dataUrl=await fileToDataURL(file);
+    const result=await Tesseract.recognize(file,'eng',{
+      logger:m=>{
+        if (m.status==='recognizing text') bar.style.width=Math.round(m.progress*100)+'%';
+      }
+    });
+    const text=result.data.text || '';
+    const lines=text.split(/\n+/).filter(Boolean);
+    pending={
+      id:crypto.randomUUID(),
+      createdAt:new Date().toISOString(),
+      vendor:guessVendor(lines),
+      date:guessDate(text),
+      total:guessTotal(text),
+      category:guessCategory(text),
+      image:dataUrl,
+      rawText:text
+    };
+    document.getElementById('eVendor').value=pending.vendor;
+    document.getElementById('eDate').value=pending.date;
+    document.getElementById('eTotal').value=pending.total;
+    document.getElementById('eCategory').value=pending.category;
+    bar.style.width='100%';
+    statusEl.textContent='Receipt read. Quick check before saving.';
+    dlg.showModal();
+  } catch(e) {
+    console.error(e);
+    statusEl.textContent='Could not read that receipt. Try a clearer photo.';
+  } finally {
+    camera.value='';
+    setTimeout(()=>{progress.style.display='none';bar.style.width='0%';},600);
   }
 });
 
-async function loadReceipts() {
-  const rows = await fetch("/api/receipts").then(r=>r.json());
-  const list = document.getElementById("list");
-  if (!rows.length) {
-    list.innerHTML = '<div class="empty">No receipts yet.</div>';
-    return;
-  }
-  list.innerHTML = rows.map(r => `
+document.getElementById('cancelEdit').onclick=()=>{ pending=null; dlg.close(); statusEl.textContent='Canceled.'; };
+document.getElementById('saveEdit').onclick=async()=>{
+  if (!pending) return;
+  pending.vendor=document.getElementById('eVendor').value.trim() || 'Unknown store';
+  pending.date=document.getElementById('eDate').value;
+  pending.total=parseFloat(document.getElementById('eTotal').value || '0') || 0;
+  pending.category=document.getElementById('eCategory').value;
+  await putReceipt(pending);
+  statusEl.textContent=`Saved: ${pending.vendor} — $${Number(pending.total).toFixed(2)}`;
+  pending=null; dlg.close();
+  await refresh();
+};
+
+async function refresh() {
+  const rows=(await getAllReceipts()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const list=document.getElementById('list');
+  if (!rows.length) list.innerHTML='<div class="empty">No receipts yet.</div>';
+  else list.innerHTML=rows.map(r=>`
     <div class="row">
+      <img class="thumb" src="${r.image}" alt="">
       <div>
-        <img class="thumb" src="/receipts/${encodeURIComponent(r.image_name)}" alt="">
-        <div class="vendor">${escapeHtml(r.vendor || "Unknown vendor")}</div>
-        <div class="meta">${escapeHtml(r.receipt_date || "")} · ${escapeHtml(r.description || "")}</div>
-        <span class="pill">${escapeHtml(r.category || "Other")}</span>
+        <div class="vendor">${escapeHtml(r.vendor)}</div>
+        <div class="meta">${escapeHtml(r.date || '')}</div>
+        <span class="pill">${escapeHtml(r.category || 'Other')}</span>
       </div>
-      <div class="amount">$${Number(r.total || 0).toFixed(2)}</div>
-    </div>`).join("");
+      <div class="amount">$${Number(r.total||0).toFixed(2)}</div>
+    </div>`).join('');
+
+  const month=new Date().toISOString().slice(0,7);
+  const current=rows.filter(r=>(r.date||'').startsWith(month));
+  document.getElementById('monthCount').textContent=current.length;
+  document.getElementById('monthTotal').textContent='$'+current.reduce((s,r)=>s+Number(r.total||0),0).toFixed(2);
 }
 
-async function loadSummary() {
-  const s = await fetch("/api/summary").then(r=>r.json());
-  document.getElementById("monthTotal").textContent = "$" + Number(s.total || 0).toFixed(2);
-  document.getElementById("monthCount").textContent = s.count || 0;
+function escapeHtml(v){ return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+document.getElementById('exportBtn').onclick=async()=>{
+  const rows=(await getAllReceipts()).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const q=s=>`"${String(s??'').replaceAll('"','""')}"`;
+  const csv=['Date,Vendor,Category,Total',...rows.map(r=>[q(r.date),q(r.vendor),q(r.category),Number(r.total||0).toFixed(2)].join(','))].join('\n');
+  downloadBlob(new Blob([csv],{type:'text/csv'}),'receipts.csv');
+};
+
+document.getElementById('backupBtn').onclick=async()=>{
+  const rows=await getAllReceipts();
+  downloadBlob(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}),'receipt-snap-backup.json');
+};
+
+function downloadBlob(blob,name){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
-function escapeHtml(v) {
-  return String(v ?? "").replace(/[&<>"']/g, m => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
-  })[m]);
-}
-
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");
-loadReceipts();
-loadSummary();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+refresh();
 </script>
 </body>
 </html>
